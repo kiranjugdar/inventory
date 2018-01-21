@@ -65,7 +65,7 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>com.mkyong.core.utils.App</mainClass>
+							<mainClass>com.jugdar.inventory.App</mainClass>
 							<classpathPrefix>dependency-jars/</classpathPrefix>
 						</manifest>
 					</archive>

@@ -1,10 +1,11 @@
+
 # Inventory Management 
 ## Build and Run instruction
 1) mvn clean package
 2) java -jar target/inventory.jar 
 
+
 ## This code provides solution following problem
-###
 
 Mr. X owns a store that sells almost everything you think about. Now he wants a inventory management system to manage his inventory. Mr. X feels that controlling his inventory through SMS from his mobile will be revolutionary. So as a prequel, he decides that he wants a system that accepts one line commands and performs the respective operation.
 
@@ -25,8 +26,7 @@ d) updateSell itemName quantity
 e) report
       	Whenever Mr. X wants to view his inventory list he issues the report command. This command should print the current inventory details in the specified format sorted by alphabetical order. Apart from printing the inventory it has to report on the profit made by Mr. X since last report generation.
 Where profit is calculated by:  ∑ (sellingPrice-costPrice) of the sold items multiplied by no. of items sold- costPrice of the deleted items.
- 
- 
+
 Sample Input
 
 create Book01 10.50 13.79
@@ -50,32 +50,29 @@ updateSell Food01 5
 updateSell Mobile01 4
 updateSell Med01 10
 report
-#
+
 Expected Output
               	INVENTORY REPORT
-Item Name 	Bought At    	Sold At       	AvailableQty    	Value
---------- 	---------    	-------       	-----------     	-------
-Book01    	10.50          	13.79               	100    	1050.00
-Food01     	1.47           	3.98               	498     	732.06
-Med01     	30.63          	34.29               	100    	3063.00
-Tab01     	57.00          	84.98                	96    	5472.00
+|Item Name 	|Bought At    	|Sold At       	|AvailableQty    	|Value
+|--------- 	|---------    	|-------       	|-----------     	|-------
+|Book01    	|10.50          	|13.79               	|100    	|1050.00
+|Food01     	|1.47           	|3.98               	|498     	|732.06
+|Med01     	|30.63          	|34.29               	|100    	|3063.00
+|Tab01     	|57.00          	|84.98                	|96    	|5472.00
 ---------------------------------------------------------------------------
 Total value                                                     	10317.06
 Profit since previous report                                      	116.94
  
- 
               	INVENTORY REPORT
-Item Name 	Bought At    	Sold At  	AvailableQty    	Value
---------- 	---------    	-------  	-----------     	-------
-Food01          	1.47      	3.98       	493           	724.71
-Med01          	30.63     	34.29        	90          	2756.70
-Mobile01       	10.51     	44.56       	246          	2585.46
-Tab01          	57.00     	84.98        	91          	5187.00
+|Item Name 	|Bought At    	|Sold At  	|AvailableQty    	|Value
+|--------- 	|---------    	|-------  	|-----------     	|-------
+|Food01          	|1.47      	|3.98       	|493           	|724.71
+|Med01          |30.63     	|34.29        	|90          	|2756.70
+|Mobile01       	|10.51     	|44.56       	|246          	|2585.46
+|Tab01          	|57.00     	|84.98        	|91          	|5187.00
 ---------------------------------------------------------------------------
 Total value                                                   	11253.87
 Profit since previous report                                   	-724.75
- 
- 
 In-Office Extension:
  
 f) updateSellPrice itemName newSellPrice
@@ -83,3 +80,4 @@ f) updateSellPrice itemName newSellPrice
  
 report:
       	Now while calculating the report profit, the system should take care of 2 different selling prices for a same item. Profits should be calculated with old selling price for the items sold before updating and with new selling price for the items bought after updating.
+

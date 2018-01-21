@@ -1,48 +1,41 @@
 package com.jugdar.inventory.service;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
+import com.jugdar.inventory.model.Inventory;
 import com.jugdar.inventory.model.Item;
 import com.jugdar.inventory.model.ItemDetails;
 
 
 /**
- * Service represent inventory and provides inventory operations 
+ * Service represent inventory operations 
  */
-public class InventoryService implements Inventory {
+public class InventoryService implements InventoryOperations {
 	
-	// Holds items in inventory. Map adds easy add/retrieve items. Tree map for sorted order of items 
-	Map<String, ItemDetails> inventory = new TreeMap<String, ItemDetails>(); 
-	// Holds list of items deleted from inventory
-	List<ItemDetails> deletedInventory = new ArrayList<ItemDetails>();
-	
+	Inventory inventory = new Inventory();
 
 	@Override
 	public void create(String name, Double costPrice, Double sellPrice) {
 		Item item = new Item(name, costPrice, sellPrice);
 		ItemDetails itemDetails = new ItemDetails(item, 0.0, 0.0);
-		inventory.put(name, itemDetails);
+		inventory.getInventory().put(name, itemDetails);
 	}
 
 	@Override
 	public void delete(String name) {
 		//Remove item from inventory and add to deleted items list
-		ItemDetails itemDetails = inventory.get(name);
-		inventory.remove(name);
-		deletedInventory.add(itemDetails);
+		ItemDetails itemDetails = inventory.getInventory().get(name);
+		inventory.getInventory().remove(name);
+		inventory.getDeletedInventory().add(itemDetails);
 	}
 
 	@Override
 	public void updateBuy(String name, Double quantity) {
-		ItemDetails itemDetails = inventory.get(name);
+		ItemDetails itemDetails = inventory.getInventory().get(name);
 		
 		//Check item has been created before updating inventory
 		if (itemDetails != null) {
 			itemDetails.setQuantity(quantity);
-			inventory.put(name, itemDetails);
+			inventory.getInventory().put(name, itemDetails);
 		}
 		else {
 			//TODO: Throw ExceptionS
@@ -52,7 +45,7 @@ public class InventoryService implements Inventory {
 
 	@Override
 	public void updateSell(String name, Double quantity) {
-		ItemDetails itemDetails = inventory.get(name);
+		ItemDetails itemDetails = inventory.getInventory().get(name);
 		
 		//Check item has been created before updating inventory
 		if (itemDetails != null) {
@@ -64,7 +57,7 @@ public class InventoryService implements Inventory {
 				//Calculate profit on sell 
 				itemDetails.addProfits(quantity);
 				
-				inventory.put(name, itemDetails);
+				inventory.getInventory().put(name, itemDetails);
 			}
 			else {
 				//Todo: Throw exception not enough quantity
@@ -81,7 +74,7 @@ public class InventoryService implements Inventory {
 	@Override
 	public void updateSellPrice(String name, Double sellPrice) {
 		
-		ItemDetails itemDetails = inventory.get(name);
+		ItemDetails itemDetails = inventory.getInventory().get(name);
 		
 		if (itemDetails != null) {
 			
@@ -100,13 +93,13 @@ public class InventoryService implements Inventory {
 	public Double getTotalProfit() {
 		
 		// Sum profits made on each item
-		Double totalFirstProfit = inventory.values()
+		Double totalFirstProfit = inventory.getInventory().values()
 				.stream()
 				.mapToDouble(o -> o.getProfit())
 				.sum();
 		
 		// Sum cost price of deleted items
-		Double deletedItemCostPrice = deletedInventory.stream()
+		Double deletedItemCostPrice = inventory.getDeletedInventory().stream()
 						.mapToDouble(o -> o.getItem().getCostPrice() * o.getQuantity())
 						.sum();
 							
@@ -120,7 +113,7 @@ public class InventoryService implements Inventory {
 	 */
 	public Double getTotalValue() {
 		
-		Double totalValue = inventory.values()
+		Double totalValue = inventory.getInventory().values()
 						.stream()
 						.mapToDouble(o -> o.getItem().getCostPrice() * o.getQuantity())
 						.sum();
@@ -130,7 +123,7 @@ public class InventoryService implements Inventory {
 	}
 	
 	public ItemDetails findItem(String name) {
-		return inventory.get(name);
+		return inventory.getInventory().get(name);
 	}
 
 	@Override
@@ -151,7 +144,7 @@ public class InventoryService implements Inventory {
 		System.out.printf( "%10s %n", "Inventory Report");
 		System.out.printf( "%10s %9s %7s %12s %6s %n", "Item Name", "Bought At", "Sold At", "AvailableQty", "Value");
 		System.out.printf( "%10s %9s %7s %12s %6s %n", "---------", "---------", "-------", "------------", "-----");
-		inventory.values()
+		inventory.getInventory().values()
 				.stream()
 				.forEach(o -> {
 					System.out.printf( "%10s %9s %7s %12s %6s %n", o.getItem().getName(), o.getItem().getCostPrice(), o.getItem().getSellPrice(), o.getQuantity(), (o.getItem().getCostPrice() *  o.getQuantity()));
@@ -162,13 +155,13 @@ public class InventoryService implements Inventory {
 		System.out.printf( "%10s %2f  %n", "Profit since previous report", this.getTotalProfit());
 		
 		
-		//After report has been printed, clear out profits and deleted inventory
+		//After report has been printed, clear out profits and deleted inventory.getInventory()
 		//This will reset profits and deleted inventory for next report
-		inventory.values()
+		inventory.getInventory().values()
 		.stream()
 		.forEach(o -> o.clearProfits());
 		
-		deletedInventory = new ArrayList<ItemDetails>();
+		inventory.setDeletedInventory(new ArrayList<ItemDetails>());
 		
 	}
 

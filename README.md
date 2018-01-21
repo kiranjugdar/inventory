@@ -52,6 +52,7 @@ updateSell Med01 10
 report
 
 Expected Output
+
               	INVENTORY REPORT
 |Item Name 	|Bought At    	|Sold At       	|AvailableQty    	|Value
 |--------- 	|---------    	|-------       	|-----------     	|-------
@@ -62,6 +63,7 @@ Expected Output
 ---------------------------------------------------------------------------
 Total value                                                     	10317.06
 Profit since previous report                                      	116.94
+
  
               	INVENTORY REPORT
 |Item Name 	|Bought At    	|Sold At  	|AvailableQty    	|Value
@@ -73,6 +75,7 @@ Profit since previous report                                      	116.94
 ---------------------------------------------------------------------------
 Total value                                                   	11253.87
 Profit since previous report                                   	-724.75
+
 In-Office Extension:
  
 f) updateSellPrice itemName newSellPrice

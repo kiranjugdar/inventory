@@ -7,6 +7,9 @@
 ## Class Diagram
 ![Class Diagram](https://github.com/kiranjugdar/inventory/blob/master/ClassDiagram.png)
 
+## Unit tests
+1) InventoryServiceTest provides multiple test cases for inventory operations
+2) CommandInterpreterTest provides run commands and displays report.  
 
 ## This code provides solution following problem
 

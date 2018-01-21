@@ -4,6 +4,9 @@
 1) mvn clean package
 2) java -jar target/inventory.jar 
 
+## Class Diagram
+![Class Diagram](https://github.com/kiranjugdar/inventory/blob/master/ClassDiagram.png)
+
 
 ## This code provides solution following problem
 

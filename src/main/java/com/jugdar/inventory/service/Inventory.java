@@ -9,4 +9,5 @@ public interface Inventory {
 	void updateBuy(String name, Double quantity);
 	void updateSell(String name, Double quantity);
 	void report();
+	void updateSellPrice(String name, Double sellPrice);
 }

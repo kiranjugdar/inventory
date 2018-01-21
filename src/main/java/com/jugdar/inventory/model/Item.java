@@ -3,10 +3,13 @@ package com.jugdar.inventory.model;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents Item 
+ */
 public class Item {
 	private String name;
 	private Double costPrice;
-	private List<Double> sellPrice;
+	private List<Double> sellPrice; // This holds multiple sell prices. It helps to identify last sell price
 	
 	public Item(String name, Double costPrice, Double sellPrice) {
 		this.name = name;
@@ -31,30 +34,33 @@ public class Item {
 		this.costPrice = costPrice;
 	}
 
-	public Double getFirstSellPrice() {
-		if (sellPrice != null && !sellPrice.isEmpty() && sellPrice.size() >= 1) {
-			return sellPrice.get(0);
+	public Double getSellPrice() {
+		//Get the last updated price
+		if (sellPrice != null && !sellPrice.isEmpty()) {
+			return sellPrice.get(sellPrice.size() - 1);
 		}
 		
-		return 0.0;
+		return null;
 	}
 	
-	public Double getSecondSellPrice() {
-		if (sellPrice != null && !sellPrice.isEmpty() && sellPrice.size() >= 2) {
-			return sellPrice.get(1);
+	/**
+	 * This returns profit made from sell of number of quantity.
+	 * It looks at last updated sell price.
+	 * @param quantity - number of items sold
+	 * @return profit - (last sell price - cost price) * quantity
+	 */
+	public Double getProfit(Double quantity) {
+		if (this.getSellPrice() != null) {
+			return (this.getSellPrice() - costPrice) * quantity;
 		}
-		
-		return 0.0;
+		else {
+			return 0.0;
+		}
 	}
 	
-	public Double getFirstProfit(Double quantity) {
-		return (this.getFirstSellPrice() - costPrice) * quantity;
+	public void updateSellPrice(Double sellPrice) {
+		// Update the sell price by adding new sell price to array
+		this.sellPrice.add(sellPrice);
 	}
 	
-	public Double getSecondProfit(Double quantity) {
-		return (this.getSecondSellPrice() - costPrice) * quantity;
-	}
-	
-	
-
 }

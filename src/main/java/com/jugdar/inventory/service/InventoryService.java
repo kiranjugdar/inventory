@@ -9,9 +9,14 @@ import com.jugdar.inventory.model.Item;
 import com.jugdar.inventory.model.ItemDetails;
 
 
+/**
+ * Service represent inventory and provides inventory operations 
+ */
 public class InventoryService implements Inventory {
 	
-	Map<String, ItemDetails> inventory = new TreeMap<String, ItemDetails>();
+	// Holds items in inventory. Map adds easy add/retrieve items. Tree map for sorted order of items 
+	Map<String, ItemDetails> inventory = new TreeMap<String, ItemDetails>(); 
+	// Holds list of items deleted from inventory
 	List<ItemDetails> deletedInventory = new ArrayList<ItemDetails>();
 	
 
@@ -24,6 +29,7 @@ public class InventoryService implements Inventory {
 
 	@Override
 	public void delete(String name) {
+		//Remove item from inventory and add to deleted items list
 		ItemDetails itemDetails = inventory.get(name);
 		inventory.remove(name);
 		deletedInventory.add(itemDetails);
@@ -33,6 +39,7 @@ public class InventoryService implements Inventory {
 	public void updateBuy(String name, Double quantity) {
 		ItemDetails itemDetails = inventory.get(name);
 		
+		//Check item has been created before updating inventory
 		if (itemDetails != null) {
 			itemDetails.setQuantity(quantity);
 			inventory.put(name, itemDetails);
@@ -47,12 +54,14 @@ public class InventoryService implements Inventory {
 	public void updateSell(String name, Double quantity) {
 		ItemDetails itemDetails = inventory.get(name);
 		
+		//Check item has been created before updating inventory
 		if (itemDetails != null) {
 			Double availableQuantity = itemDetails.getQuantity();
 			//Check inventory if there is enough quantity to sell
 			if (availableQuantity >= quantity) {
 				itemDetails.setQuantity(availableQuantity - quantity);
 				
+				//Calculate profit on sell 
 				itemDetails.addProfits(quantity);
 				
 				inventory.put(name, itemDetails);
@@ -69,13 +78,34 @@ public class InventoryService implements Inventory {
 		
 	}
 	
-	public Double getTotalFirstProfit() {
+	@Override
+	public void updateSellPrice(String name, Double sellPrice) {
 		
+		ItemDetails itemDetails = inventory.get(name);
+		
+		if (itemDetails != null) {
+			
+			itemDetails.updateSellPrice(sellPrice);
+		}
+		else {
+			//TODO: Throw Exception
+		}
+		
+	}
+	
+	/**
+	 * This calculates profit made on all items in inventory
+	 * @return total profit 
+	 */
+	public Double getTotalProfit() {
+		
+		// Sum profits made on each item
 		Double totalFirstProfit = inventory.values()
 				.stream()
-				.mapToDouble(o -> o.getFirstProfit())
+				.mapToDouble(o -> o.getProfit())
 				.sum();
 		
+		// Sum cost price of deleted items
 		Double deletedItemCostPrice = deletedInventory.stream()
 						.mapToDouble(o -> o.getItem().getCostPrice() * o.getQuantity())
 						.sum();
@@ -84,6 +114,10 @@ public class InventoryService implements Inventory {
 		return totalFirstProfit - deletedItemCostPrice;
 	}
 	
+	/**
+	 * 
+	 * @return Total cost price of items in inventory
+	 */
 	public Double getTotalValue() {
 		
 		Double totalValue = inventory.values()
@@ -101,6 +135,8 @@ public class InventoryService implements Inventory {
 
 	@Override
 	public void report() {
+
+// This would be expected format of report		
 //      	INVENTORY REPORT
 //Item Name 	Bought At    	Sold At       	AvailableQty    	Value
 //--------- 	---------    	-------       	-----------     	-------
@@ -118,14 +154,16 @@ public class InventoryService implements Inventory {
 		inventory.values()
 				.stream()
 				.forEach(o -> {
-					System.out.printf( "%10s %9s %7s %12s %6s %n", o.getItem().getName(), o.getItem().getCostPrice(), o.getItem().getFirstSellPrice(), o.getQuantity(), (o.getItem().getCostPrice() *  o.getQuantity()));
+					System.out.printf( "%10s %9s %7s %12s %6s %n", o.getItem().getName(), o.getItem().getCostPrice(), o.getItem().getSellPrice(), o.getQuantity(), (o.getItem().getCostPrice() *  o.getQuantity()));
 				});
 
 		System.out.printf( "%10s %9s %7s %12s %6s %n", "---------", "---------", "-------", "------------", "-----");
 		System.out.printf( "%10s %9s  %n", "Total Value", this.getTotalValue());
-		System.out.printf( "%10s %2f  %n", "Profit since previous report", this.getTotalFirstProfit());
+		System.out.printf( "%10s %2f  %n", "Profit since previous report", this.getTotalProfit());
 		
 		
+		//After report has been printed, clear out profits and deleted inventory
+		//This will reset profits and deleted inventory for next report
 		inventory.values()
 		.stream()
 		.forEach(o -> o.clearProfits());

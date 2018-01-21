@@ -30,7 +30,7 @@ public class InventoryServiceTest {
 		
 		Assert.assertNotNull(itemDetails);
 		Assert.assertEquals(costPrice, itemDetails.getItem().getCostPrice());
-		Assert.assertEquals(sellPrice, itemDetails.getItem().getFirstSellPrice());
+		Assert.assertEquals(sellPrice, itemDetails.getItem().getSellPrice());
 		
 	}
 	
@@ -52,13 +52,13 @@ public class InventoryServiceTest {
 		
 		Assert.assertNotNull(itemDetails);
 		Assert.assertEquals(costPrice, itemDetails.getItem().getCostPrice());
-		Assert.assertEquals(sellPrice, itemDetails.getItem().getFirstSellPrice());
+		Assert.assertEquals(sellPrice, itemDetails.getItem().getSellPrice());
 		
 		itemDetails = inventoryService.findItem(itemName2);
 		
 		Assert.assertNotNull(itemDetails);
 		Assert.assertEquals(costPrice2, itemDetails.getItem().getCostPrice());
-		Assert.assertEquals(sellPrice2, itemDetails.getItem().getFirstSellPrice());
+		Assert.assertEquals(sellPrice2, itemDetails.getItem().getSellPrice());
 		
 	}
 	
@@ -76,11 +76,11 @@ public class InventoryServiceTest {
 		inventoryService.updateSell(itemName, sellQuantity);
 		ItemDetails itemDetails = inventoryService.findItem(itemName);
 		
-		Double profit = itemDetails.getFirstProfit();
+		Double profit = itemDetails.getProfit();
 		Double expectedProfit = (sellPrice - costPrice) * sellQuantity;
 		Assert.assertEquals(expectedProfit, profit);
 		
-		Assert.assertEquals(expectedProfit, inventoryService.getTotalFirstProfit());
+		Assert.assertEquals(expectedProfit, inventoryService.getTotalProfit());
 		
 	}
 	
@@ -98,11 +98,11 @@ public class InventoryServiceTest {
 		inventoryService.updateSell(itemName, sellQuantity);
 		
 		ItemDetails itemDetails = inventoryService.findItem(itemName);
-		Double profit = itemDetails.getFirstProfit();
+		Double profit = itemDetails.getProfit();
 		Double expectedProfit = (sellPrice - costPrice) * sellQuantity;
 		Assert.assertEquals(expectedProfit, profit);
 		Double expectedTotalProfit = expectedProfit;
-		Assert.assertEquals(expectedTotalProfit, inventoryService.getTotalFirstProfit());
+		Assert.assertEquals(expectedTotalProfit, inventoryService.getTotalProfit());
 		
 		String itemName2 = "Food01";
 		Double costPrice2 = 1.47;
@@ -115,13 +115,13 @@ public class InventoryServiceTest {
 		inventoryService.updateSell(itemName2, sellQuantity2);
 		
 		ItemDetails itemDetails2 = inventoryService.findItem(itemName2);
-		Double profit2 = itemDetails2.getFirstProfit();
+		Double profit2 = itemDetails2.getProfit();
 		Double expectedProfit2 = (sellPrice2 - costPrice2) * sellQuantity2;
 		Assert.assertEquals(expectedProfit2, profit2);
 		
 		expectedTotalProfit = expectedProfit +  expectedProfit2;
 		
-		Assert.assertEquals(expectedTotalProfit, inventoryService.getTotalFirstProfit());
+		Assert.assertEquals(expectedTotalProfit, inventoryService.getTotalProfit());
 		
 		
 		
@@ -142,11 +142,11 @@ public class InventoryServiceTest {
 		inventoryService.updateSell(itemName, sellQuantity);
 		
 		ItemDetails itemDetails = inventoryService.findItem(itemName);
-		Double profit = itemDetails.getFirstProfit();
+		Double profit = itemDetails.getProfit();
 		Double expectedProfit = (sellPrice - costPrice) * sellQuantity;
 		Assert.assertEquals(expectedProfit, profit);
 		Double expectedTotalProfit = expectedProfit;
-		Assert.assertEquals(expectedTotalProfit, inventoryService.getTotalFirstProfit());
+		Assert.assertEquals(expectedTotalProfit, inventoryService.getTotalProfit());
 		
 		String itemName2 = "Food01";
 		Double costPrice2 = 1.47;
@@ -159,13 +159,13 @@ public class InventoryServiceTest {
 		inventoryService.updateSell(itemName2, sellQuantity2);
 		
 		ItemDetails itemDetails2 = inventoryService.findItem(itemName2);
-		Double profit2 = itemDetails2.getFirstProfit();
+		Double profit2 = itemDetails2.getProfit();
 		Double expectedProfit2 = (sellPrice2 - costPrice2) * sellQuantity2;
 		Assert.assertEquals(expectedProfit2, profit2);
 		
 		expectedTotalProfit = expectedProfit +  expectedProfit2;
 		
-		Assert.assertEquals(expectedTotalProfit, inventoryService.getTotalFirstProfit());
+		Assert.assertEquals(expectedTotalProfit, inventoryService.getTotalProfit());
 		
 		///
 
@@ -180,9 +180,38 @@ public class InventoryServiceTest {
 		inventoryService.delete(itemName3);
 		
 		expectedTotalProfit = expectedTotalProfit - deleteCostPrice;
-		Assert.assertEquals(expectedTotalProfit, inventoryService.getTotalFirstProfit());
+		Assert.assertEquals(expectedTotalProfit, inventoryService.getTotalProfit());
 		
 		
+	}
+	
+	@Test
+	public void X_Updates_Sell_Price_And_Calculates_Profit() {
+		
+		String itemName = "Book01";
+		Double costPrice = 10.50;
+		Double sellPrice = 13.79;
+		Double buyQuantity = 100.00;
+		Double sellQuantity = 10.00;
+		Double updatedSellPrice = 11.79;
+		
+		inventoryService.create(itemName, costPrice, sellPrice);
+		inventoryService.updateBuy(itemName, buyQuantity);
+		inventoryService.updateSell(itemName, sellQuantity);
+		ItemDetails itemDetails = inventoryService.findItem(itemName);
+		
+		Double profit = itemDetails.getProfit();
+		Double expectedProfit = (sellPrice - costPrice) * sellQuantity;
+		Double expectedSecondProfit = 0.0;
+		Assert.assertEquals(expectedProfit, profit);
+		Assert.assertEquals(expectedProfit, inventoryService.getTotalProfit());
+		
+		inventoryService.updateSellPrice(itemName, updatedSellPrice);
+		inventoryService.updateSell(itemName, sellQuantity);
+		expectedSecondProfit =((updatedSellPrice - costPrice) * sellQuantity) + expectedProfit;
+		Assert.assertEquals(expectedSecondProfit, inventoryService.getTotalProfit());
+	
+	
 	}
 	
 	

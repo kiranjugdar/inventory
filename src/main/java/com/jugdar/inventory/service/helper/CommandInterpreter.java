@@ -2,16 +2,22 @@ package com.jugdar.inventory.service.helper;
 
 import com.jugdar.inventory.service.InventoryService;
 
+/**
+ * Helper class to interpret command
+ * @author kiran
+ *
+ */
 public class CommandInterpreter {
 
 	
 	InventoryService inventoryService = new InventoryService();
 	
+	/**
+	 * This method interprets single line command and invoke appropriate inventory service method
+	 * @param command : 
+	 */
 	public void run(String command) {
-		//create Book01 10.50 13.79
-				//updateBuy Tab01 100
-				//updateSell Food01 1
-				//delete Book01
+	
 		String[] commandParts = command.split(" ");
 		if (commandParts.length > 0) {
 			String commandName = commandParts[0];
@@ -36,6 +42,10 @@ public class CommandInterpreter {
 				case "updateSell":
 					quantity =  Double.valueOf(commandParts[2]);
 					inventoryService.updateSell(itemName, quantity);
+				break;
+				case "updateSellPrice":
+					sellPrice =  Double.valueOf(commandParts[2]);
+					inventoryService.updateSellPrice(itemName, sellPrice);
 				break;
 				case "delete":
 					inventoryService.delete(itemName);

@@ -20,13 +20,13 @@ public class CommandInterpreterTest {
 		
 		Assert.assertNotNull(itemDetails);
 		Assert.assertEquals(costPrice, itemDetails.getItem().getCostPrice());
-		Assert.assertEquals(sellPrice, itemDetails.getItem().getFirstSellPrice());
+		Assert.assertEquals(sellPrice, itemDetails.getItem().getSellPrice());
 		
 		
 	}
 	
 	@Test
-	public void run_sample_command() {
+	public void run_report_command() {
 		
 		commandInterpreter.run("create Book01 10.50 13.79");
 		commandInterpreter.run("create Food01 1.47 3.98");
@@ -41,19 +41,10 @@ public class CommandInterpreterTest {
 		commandInterpreter.run("updateSell Food01 1");
 		commandInterpreter.run("updateSell Tab01 2");
 		commandInterpreter.run("report");
-//		commandInterpreter.run("delete Book01");
-//		commandInterpreter.run("updateSell Tab01 5");
-//		commandInterpreter.run("create Mobile01 10.51 44.56");
-//		commandInterpreter.run("updateBuy Mobile01 250");
-//		commandInterpreter.run("updateSell Food01 5");
-//		commandInterpreter.run("updateSell Mobile01 4");
-//	    commandInterpreter.run("updateSell Med01 10");
-//		commandInterpreter.run("report");
-		
 	}
 	
 	@Test
-	public void run_sample_command2() {
+	public void run_report_twice_command() {
 		
 //      	INVENTORY REPORT
 //Item Name 	Bought At    	Sold At  	AvailableQty    	Value
@@ -87,6 +78,35 @@ public class CommandInterpreterTest {
 		commandInterpreter.run("updateSell Mobile01 4");
 	    commandInterpreter.run("updateSell Med01 10");
 		commandInterpreter.run("report");
+		
+	}
+	
+	@Test
+	public void update_sellprice_run_report_command() {
+		
+		Double profit = (13.79 - 10.50) * 10;
+		Double profit2 = (11.79 - 10.50) * 10;
+		Double totalProfit =  116.94 + profit + profit2;
+		
+		System.out.println("totalProfit should be " +  totalProfit);
+		
+		commandInterpreter.run("create Book01 10.50 13.79");
+		commandInterpreter.run("create Food01 1.47 3.98");
+		commandInterpreter.run("create Med01 30.63 34.29");
+		commandInterpreter.run("create Tab01 57.00 84.98");
+		commandInterpreter.run("updateBuy Tab01 100");
+		commandInterpreter.run("updateSell Tab01 2");
+		commandInterpreter.run("updateBuy Food01 500");
+		commandInterpreter.run("updateBuy Book01 100");
+		commandInterpreter.run("updateBuy Med01 100");
+		commandInterpreter.run("updateSell Food01 1");
+		commandInterpreter.run("updateSell Food01 1");
+		commandInterpreter.run("updateSell Tab01 2");
+		commandInterpreter.run("updateSell Book01 10");
+		commandInterpreter.run("updateSellPrice Book01 11.79");
+		commandInterpreter.run("updateSell Book01 10");
+		commandInterpreter.run("report");
+		
 		
 	}
 }
